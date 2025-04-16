@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Domain.Exceptions;
 using Domain.Exceptions.product;
+using Microsoft.AspNetCore.Http;
 using Shared.ErrorModel;
 
 namespace E_Commerce.MiddleWareas
@@ -50,20 +51,28 @@ namespace E_Commerce.MiddleWareas
             httpContext.Response.StatusCode= (int)HttpStatusCode.InternalServerError;
             // Set Content Type "application / json"
             httpContext.Response.ContentType = "application/json";
-            //C#09:
-            httpContext.Response.StatusCode = exception switch
+            var response = new ErrorDetails
+            {
+
+                ErrorMessage = exception.Message
+            };
+			//C#09:
+			httpContext.Response.StatusCode = exception switch
             {
                 NotFoundException => (int)HttpStatusCode.NotFound,
+                UnAuthorizedExceptions => (int)HttpStatusCode.Unauthorized,
+                RegisterValidationExceptions validationExceptions => HandleValidationException(validationExceptions, response),
                _ => (int)HttpStatusCode.InternalServerError
             };
             //return Standered Response 
-            var response = new ErrorDetails
-            {
-                StatusCode = httpContext.Response.StatusCode,
-                ErrorMessage = exception.Message
-            }.ToString();
-            await httpContext.Response.WriteAsync(response);
+            response.StatusCode = httpContext.Response.StatusCode;
+            await httpContext.Response.WriteAsync(response.ToString());
         }
 
-    }
+		private int HandleValidationException(RegisterValidationExceptions validationExceptions, ErrorDetails response)
+		{
+			response.Errors = validationExceptions.Errors;
+            return (int) HttpStatusCode.BadRequest  ;
+		}
+	}
 }

@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 
 namespace Persentation
 {
-	[ApiController]
-	[Route("api/[Controller]")]
-	public class BasketController(IServiceManager ServiceManager) : ControllerBase
+	public class BasketController(IServiceManager ServiceManager) : ApiController
 	{
 		#region Update
 		[HttpPost]
