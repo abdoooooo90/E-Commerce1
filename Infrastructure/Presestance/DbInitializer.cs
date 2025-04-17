@@ -1,6 +1,7 @@
 ﻿using Domain.Contracts;
 using Domain.Entities;
 using Domain.Entities.Identity;
+using Domain.Entities.OrderEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
@@ -39,7 +40,7 @@ namespace Persistence
 				if (!_storeContext.ProductTypes.Any())
 				{
 					//Read Types From File As String
-					var typesData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce\Infrastructure\Presestance\Data\Seeding\types.json");
+					var typesData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce (1)\E-Commerce\Infrastructure\Presestance\Data\Seeding\types.json");
 					//Transform Into C# Objects
 					var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
 					//Add To DB & Save Changes
@@ -55,7 +56,7 @@ namespace Persistence
 				if (!_storeContext.ProductBrands.Any())
 				{
 					//Read Types From File As String
-					var brandsData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce\Infrastructure\Presestance\Data\Seeding\brands.json");
+					var brandsData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce (1)\E-Commerce\Infrastructure\Presestance\Data\Seeding\brands.json");
 					//Transform Into C# Objects
 					var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
 					//Add To DB & Save Changes
@@ -71,7 +72,7 @@ namespace Persistence
 				if (!_storeContext.Products.Any())
 				{
 					//Read Types From File As String
-					var productData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce\Infrastructure\Presestance\Data\Seeding\products.json");
+					var productData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce (1)\E-Commerce\Infrastructure\Presestance\Data\Seeding\products.json");
 					//Transform Into C# Objects
 					var products = JsonSerializer.Deserialize<List<Product>>(productData);
 					//Add To DB & Save Changes
@@ -83,7 +84,24 @@ namespace Persistence
 
 				}
 				#endregion
-			}catch (Exception)
+				#region DeliveryMethods
+				if (!_storeContext.DeliveryMethods.Any())
+				{
+					//Read Types From File As String
+					var deliveryMethodsData = await File.ReadAllTextAsync(@"C:\Users\abdos\OneDrive\Desktop\.net\C#\API\E-Commerce (1)\E-Commerce\Infrastructure\Presestance\Data\Seeding\delivery.json");
+					//Transform Into C# Objects
+					var Methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+					//Add To DB & Save Changes
+					if (Methods is not null && Methods.Any())
+					{
+						await _storeContext.DeliveryMethods.AddRangeAsync(Methods);
+						await _storeContext.SaveChangesAsync();
+					}
+
+				}
+				#endregion
+			}
+			catch (Exception)
 			{
 				throw;
 			}
